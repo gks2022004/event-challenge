@@ -1,31 +1,37 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
-// will compile your contracts, add the Hardhat Runtime Environment's members to the
-// global scope, and execute the script.
 const hre = require("hardhat");
 
 async function main() { 
-  const EventTest = await hre.ethers.getContractFactory("Bank");
-  const eventTest = await EventTest.deploy();
+  const Bank = await hre.ethers.getContractFactory("Bank");
+  const bank = await Bank.deploy();
 
-  await eventTest.deployed();
+  await bank.deployed();
 
-  eventTest.on("Deposit", (owner, amount) => {
-    console.log(`New deposit: ${owner} ${amount} WEI`);
-  })
+  bank.on("Deposit", (owner, amount) => {
+    console.log(`New deposit: ${owner} ${amount.toString()} WEI`);
+  });
 
-  eventTest.on("Withdraw", (owner, amount) => {
-    console.log(`New withdraw: ${owner} ${amount} WEI`);
-  })
+  bank.on("Withdraw", (owner, amount) => {
+    console.log(`New withdraw: ${owner} ${amount.toString()} WEI`);
+  });
 
-  eventTest.on("Transfer", (from, to, amount) => {
-    console.log(`New transfer: ${from} ${to} ${amount} WEI`);
-  })
+  bank.on("Transfer", (from, to, amount) => {
+    console.log(`New transfer: ${from} ${to} ${amount.toString()} WEI`);
+  });
+
+  bank.on("Purchase", (buyer, itemName, quantity) => {
+    console.log(`New purchase: ${buyer} bought ${quantity.toString()} of ${itemName}`);
+  });
+
+  bank.on("Reward", (recipient, amount) => {
+    console.log(`New reward: ${recipient} received ${amount.toString()} WEI`);
+  });
+
+  bank.on("Penalty", (recipient, amount) => {
+    console.log(`New penalty: ${recipient} incurred a penalty of ${amount.toString()} WEI`);
+  });
 
   console.log(
-    `Contract deployed to ${eventTest.address}`
+    `Contract deployed to ${bank.address}`
   );
 }
 
